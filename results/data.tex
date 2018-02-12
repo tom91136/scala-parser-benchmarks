@@ -1,0 +1,36 @@
+\documentclass{article}
+\usepackage{pgfplots, pgfplotstable, filecontents}
+\pgfplotsset{compat=newest}
+
+\begin{filecontents}{data.dat}
+	id method score error
+	1 parseBindFoldCurried 1623.556 54.151
+	2 parseBindFoldTuple2 1567.674 44.021
+	3 parseBindRecursiveCurried 8378.670 232.751
+	4 parseBindRecursiveTuple2 9723.052 489.976
+	5 parseHandRollRD 36.917 2.851
+	6 parseParsecForScalaChainL1 18921.684 1833.393
+	7 parseRightRecursive 1577.414 57.517
+\end{filecontents}
+
+\begin{document}
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[
+			ytick=data,
+			yticklabels from table={data.dat}{method},
+			xlabel=ns/op,
+			ylabel=method,
+			]
+				\addplot [color=blue, only marks,]
+				plot [error bars/.cd, x dir = both, x explicit]
+				table[ y = id, x = score, x error = error]{data.dat};
+			\end{axis}
+		\end{tikzpicture}
+		\vspace*{0.5cm}
+		\pgfplotstabletypeset[
+		columns/method/.style={string type}
+		]
+		{data.dat}
+	\end{center}
+\end{document}

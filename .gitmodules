@@ -1,0 +1,3 @@
+[submodule "parsec-for-scala"]
+	path = parsec-for-scala
+	url = https://tom91136@bitbucket.org/J_mie6/parsec-for-scala.git
