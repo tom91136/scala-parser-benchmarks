@@ -6,6 +6,8 @@ libraries such as [parsec-for-scala](https://bitbucket.org/J_mie6/parsec-for-sca
 
 Latest results are [here](results/data.pdf)
 
+The benchmark fixtures are [here](src/main/scala/net/kurobako/fastparsebench/Fixtures.scala)
+
 To run benchmarks:
 
-   ./sbt jmh:run
+    ./sbt jmh:run
