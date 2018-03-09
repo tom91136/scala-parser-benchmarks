@@ -1,6 +1,7 @@
 package net.kurobako.spb
 
 import net.kurobako.spb
+import net.kurobako.spb.simple.Simple
 import org.scalatest.{EitherValues, FlatSpec, Matchers}
 import org.scalatest.prop.TableDrivenPropertyChecks._
 
@@ -17,7 +18,8 @@ class SimpleSpec extends FlatSpec with Matchers with EitherValues {
 		val simple = new Simple
 		forAll(Table(
 			("def", "input", "expected"),
-			(simple.tailRecursiveBaseline _, TestString, Expected),
+			(simple.baselineTailRecursiveTry _, TestString, Expected),
+			(simple.baselineRecursiveDecent _, TestString, Expected),
 			(simple.warmScalaParserCombinatorChainL _, TestString, Expected),
 			(simple.warmAttoChainL _, TestString, Expected),
 			(simple.warmParsecForScalaChainL _, TestString, Expected),
@@ -38,7 +40,7 @@ class SimpleSpec extends FlatSpec with Matchers with EitherValues {
 			(simple.coldFastParseBindRecursiveTuple2 _, TestString, Expected),
 			(simple.coldFastParseRightRecursive _, TestString, Expected)
 		)) { (method, input, expected) =>
-			val context = new spb.Simple.Context()
+			val context = new spb.simple.Simple.Context()
 			context.token = TestString
 			val actual = method(context)
 			actual.right.value shouldBe expected

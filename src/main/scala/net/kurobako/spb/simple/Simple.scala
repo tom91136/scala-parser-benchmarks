@@ -1,13 +1,12 @@
-package net.kurobako.spb
+package net.kurobako.spb.simple
 
 import java.util.concurrent.TimeUnit
 
-import net.kurobako.spb.Simple._
+import net.kurobako.spb.simple.Simple.{Context, Result}
 import org.openjdk.jmh.annotations._
 import org.openjdk.jmh.runner.options.OptionsBuilder
 import org.openjdk.jmh.runner.{Runner, RunnerException}
 
-import scala.annotation.tailrec
 import scala.util.Either
 
 @BenchmarkMode(Array(Mode.AverageTime))
@@ -63,18 +62,9 @@ object Simple {
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 class Simple {
 
-	// baseline tailrec(not recursive decent)
-	@Benchmark def tailRecursiveBaseline(ctx: Context): Result = {
-		@tailrec def parseSimple(input: String, index: Int, sum: Int): Int = {
-			if (index >= ctx.token.length) return sum
-			input.charAt(index) match {
-				case c@'1' => parseSimple(input, index + 1, sum + c)
-				case '+'   => parseSimple(input, index + 1, sum)
-			}
-		}
-
-		Right(parseSimple(ctx.token, 0, 0))
-	}
+	// baselines
+	@Benchmark def baselineTailRecursiveTry(ctx: Context): Result = Baselines.tailRecursiveTry(ctx.token)
+	@Benchmark def baselineRecursiveDecent(ctx: Context): Result = Baselines.recursiveDecent(ctx.token)
 
 	// scala-parser-combinator
 	@Benchmark def warmScalaParserCombinatorChainL(ctx: Context): Result = ScalaParserCombinatorFixtures.collect(ScalaParserCombinatorFixtures._chainL, ctx.token)

@@ -1,9 +1,60 @@
-package net.kurobako.spb
+package net.kurobako.spb.simple
 
-import net.kurobako.spb.Simple.Result
+import net.kurobako.spb.simple.Simple.Result
+
+import scala.annotation.tailrec
+import scala.util.Try
 
 
 // fixtures cannot be nested, see https://github.com/ktoso/sbt-jmh/issues/69
+
+object Baselines {
+
+
+	@tailrec final def parseSimple(input: String, index: Int, sum: Int): Int = {
+		if (index >= input.length) return sum
+		input.charAt(index) match {
+			case c@'1' => parseSimple(input, index + 1, sum + c)
+			case '+'   => parseSimple(input, index + 1, sum)
+			case x     => sys.error(s"unexpected $x") // intentional
+		}
+	}
+
+	@inline
+	final def tailRecursiveTry(input: String): Either[String, Int] = Try {parseSimple(input, 0, 0)}
+		.toEither.left.map(_.getMessage)
+
+	@inline
+	final def one(input: String, index: Int): (Either[String, Int], Int) = {
+		if (index < input.length && input(index) == '1') (Right('1'.toInt), index + 1)
+		else (Left(s"$index: Expected 1, got ${if (index < input.length) input(index) else "end of input"}"), index)
+	}
+
+	@inline
+	final def plus(input: String, index: Int): (Either[String, (Int, Int) => Int], Int) = {
+		if (index < input.length && input(index) == '+') (Right(_ + _), index + 1)
+		else (Left(s"$index: Expected +, got ${if (index < input.length) input(index) else "end of input"}"), index)
+	}
+
+	// FIXME excessive underscores
+	@inline
+	final def expr(input: String, index: Int): (Either[String, Int], Int) = {
+		one(input, index) match {
+			case (Right(x), index_) => plus(input, index_) match {
+				case (Right(op), index__) => expr(input, index__) match {
+					case (Right(y), index___) => (Right(op(x, y)), index___)
+					case (err, index___)      => (err, index___)
+				}
+				case (_, index__)         => (Right(x), index__)
+			}
+			case err                => err
+		}
+	}
+
+	@inline
+	final def recursiveDecent(input: String): Either[String, Int] = expr(input: String, 0)._1
+
+}
 
 object ScalaParserCombinatorFixtures {
 
@@ -42,24 +93,20 @@ object ScalaParserCombinatorFixtures {
 object AttoFixtures {
 
 	import atto._
-	import atto.parser.all._
+	import Atto._
 
 	@inline final def collect(_parser: Parser[Int], input: String): Result = {
-		import Atto._
 		// XXX apparently, naming the parser `parser` shadows some import...
 		_parser.parseOnly(input).either
 	}
 	final val _chainL = chainL()
 	@inline final def chainL(): Parser[Int] = {
-		def chainl[B](p: Parser[B], op: Parser[(B, B) => B]): Parser[B] = {
-			// TailRecM ???
-			def rest(x: B): Parser[B] = choice(for {
-				f <- op
-				y <- p
-				z <- rest(f(x, y))
-			} yield z, ok(x))
 
-			p.flatMap {rest}
+		def chainl[B](p: Parser[B], op: Parser[(B, B) => B]): Parser[B] = {
+			def rest(x: B): Parser[B] =
+				orElse((for (f <- op; y <- p) yield f(x, y)).flatMap(rest), ok(x))
+
+			p.flatMap(rest)
 		}
 
 		val x = string("1").map(_ (0).toInt)
