@@ -35,6 +35,8 @@ lazy val parsley = project.settings(
 	scalaSource in Compile := baseDirectory.value / "src"
 )
 
+lazy val meerkat = project in file("Meerkat")
+
 lazy val JmhVersion = "1.20"
 
 lazy val `scala-parsers` = (project in file(".")).settings(
@@ -61,7 +63,7 @@ lazy val `scala-parsers` = (project in file(".")).settings(
 		"-Xlint:deprecation"),
 	libraryDependencies ++= Seq(
 
-		"org.tpolecat" %% "atto-core"  % "0.6.2-M1",
+		"org.tpolecat" %% "atto-core" % "0.6.2-M1",
 
 		"org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.0",
 
@@ -75,7 +77,7 @@ lazy val `scala-parsers` = (project in file(".")).settings(
 	),
 	mainClass in Compile := Some("net.kurobako.spb.Simple"),
 )
-	.aggregate(`parsec-for-scala`, parsley)
-	.dependsOn(`parsec-for-scala`, parsley)
+	.aggregate(`parsec-for-scala`, parsley, meerkat)
+	.dependsOn(`parsec-for-scala`, parsley, meerkat)
 
 

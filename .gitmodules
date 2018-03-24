@@ -4,3 +4,6 @@
 [submodule "parsley"]
 	path = parsley
 	url = https://tom91136@bitbucket.org/J_mie6/parsec-for-scala.git
+[submodule "Meerkat"]
+	path = Meerkat
+	url = https://github.com/meerkat-parser/Meerkat.git

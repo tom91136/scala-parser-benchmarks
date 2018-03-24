@@ -10,6 +10,7 @@ Included:
  * [parsec-for-scala(parsley)](https://bitbucket.org/J_mie6/parsec-for-scala)
  * [atto](http://tpolecat.github.io/atto/)
  * [scala-parser-combinators](https://github.com/scala/scala-parser-combinators)
+ * [Meerkat](http://meerkat-parser.github.io/index.html)
 
 Pending:
 

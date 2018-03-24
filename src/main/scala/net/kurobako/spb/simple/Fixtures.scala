@@ -151,6 +151,27 @@ object ParsleyFixtures {
 	}
 }
 
+
+object MeerkatFixtures {
+
+	import org.meerkat.Syntax._
+	import org.meerkat.parsers._
+	import Parsers._
+
+	@inline final def bnf() = {
+		// XXX so we can't do String.apply(Int) because it got shadowed
+		val One = syn {"1" ^ { x: String => x.charAt(0).toInt }}
+		//XXX need to improve this
+		lazy val P: Nonterminal & Int = syn(P ~ "+" ~ One & { case a ~ b => a + b } | One)
+		P
+	}
+	final val _bnf = bnf()
+	@inline final def collect(parser: Nonterminal & Int, input: String): Simple.Result = {
+		exec(parser, input).left.map {_.toString}
+	}
+
+}
+
 object FastParseFixtures {
 
 	import fastparse.all

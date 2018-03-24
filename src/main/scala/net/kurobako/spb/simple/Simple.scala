@@ -78,6 +78,10 @@ class Simple {
 	@Benchmark def warmParsecForScalaChainL(ctx: Context): Result = ParserForScalaFixtures.collect(ParserForScalaFixtures._chainL, ctx.token)
 	@Benchmark def coldParsecForScalaChainL(ctx: Context): Result = ParserForScalaFixtures.collect(ParserForScalaFixtures.chainL(), ctx.token)
 
+	// meerkat
+	@Benchmark def warmMeerkatBnf(ctx: Context): Result = MeerkatFixtures.collect(MeerkatFixtures._bnf, ctx.token)
+	@Benchmark def coldMeerkatBnf(ctx: Context): Result = MeerkatFixtures.collect(MeerkatFixtures.bnf(), ctx.token)
+
 	// parsely
 	@Benchmark def warmParsleyChainL(ctx: Context): Result = ParsleyFixtures.collect(ParsleyFixtures._chainL, ctx.token)
 	@Benchmark def coldParsleyChainL(ctx: Context): Result = ParsleyFixtures.collect(ParsleyFixtures.chainL(), ctx.token)
