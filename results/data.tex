@@ -1,13 +1,16 @@
 \documentclass{article}
+\usepackage[a4paper, landscape, margin=0.5cm]{geometry}
 \usepackage{pgfplots, pgfplotstable, filecontents}
 \pgfplotsset{compat=newest}
 
 
 
 \begin{document}
-	\begin{center}
+	\begin{flushleft}
 		\begin{tikzpicture}
 			\begin{axis}[
+			width=23cm,
+			height=9cm,
 			ytick=data,
 			yticklabels from table={data.txt}{method},
 			xlabel=ns/op,
@@ -27,5 +30,5 @@
 		columns/error/.style={column type = {l}}
 		]
 		{data.txt}
-	\end{center}
+	\end{flushleft}
 \end{document}

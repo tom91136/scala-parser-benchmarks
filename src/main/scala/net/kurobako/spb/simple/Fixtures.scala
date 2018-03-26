@@ -140,7 +140,9 @@ object ParsleyFixtures {
 	import parsley._
 
 	@inline final def collect(parser: Parsley[Int], input: String): Simple.Result = {
-		runParser(parser, input) match {
+		// XXX if SMP, uncomment line below
+		// implicit val ctx = parsley.giveContext
+		runParserFastUnsafe(parser, input) match {
 			case Success(x)   => Right(x)
 			case Failure(msg) => Left(msg)
 		}
