@@ -2,20 +2,69 @@
 enablePlugins(JmhPlugin)
 
 
-
-lazy val `parsec-for-scala` = project.settings(
-	name := "parsec-for-scala",
-	version := "0.1.0-SNAPSHOT",
-	scalaVersion := "2.12.4",
+lazy val commonSettings = Seq(
+	scalaVersion := "2.12.6",
 	scalacOptions ++= Seq(
 		"-target:jvm-1.8",
 		"-encoding", "UTF-8",
 		"-unchecked",
 		"-deprecation",
+		"-explaintypes",
+		"-feature",
 		"-Xfuture",
+
+		"-language:existentials",
+		"-language:experimental.macros",
+		"-language:higherKinds",
+		"-language:postfixOps",
+		"-language:implicitConversions",
+
+		"-Xlint:adapted-args",
+		"-Xlint:by-name-right-associative",
+		"-Xlint:constant",
+		"-Xlint:delayedinit-select",
+		"-Xlint:doc-detached",
+		"-Xlint:inaccessible",
+		"-Xlint:infer-any",
+		"-Xlint:missing-interpolator",
+		"-Xlint:nullary-override",
+		"-Xlint:nullary-unit",
+		"-Xlint:option-implicit",
+		"-Xlint:package-object-classes",
+		"-Xlint:poly-implicit-overload",
+		"-Xlint:private-shadow",
+		"-Xlint:stars-align",
+		"-Xlint:type-parameter-shadow",
+		"-Xlint:unsound-match",
+
+		"-Yno-adapted-args",
+		"-Ywarn-dead-code",
+		"-Ywarn-extra-implicit",
+		"-Ywarn-inaccessible",
+		"-Ywarn-infer-any",
+		"-Ywarn-nullary-override",
+		"-Ywarn-nullary-unit",
+		"-Ywarn-numeric-widen",
+		"-Ywarn-unused:implicits",
+		//		"-Ywarn-unused:imports",
+		"-Ywarn-unused:locals",
+		"-Ywarn-unused:params",
+		"-Ywarn-unused:patvars",
+		"-Ywarn-unused:privates",
+		"-Ywarn-value-discard",
 		"-Ypartial-unification",
-		//			"-Xlog-implicits",
 	),
+	javacOptions ++= Seq(
+		"-target", "1.8",
+		"-source", "1.8",
+		"-Xlint:deprecation"),
+)
+
+
+lazy val `parsec-for-scala` = project.settings(
+	name := "parsec-for-scala",
+	version := "0.1.0-SNAPSHOT",
+	commonSettings,
 	scalaSource in Compile := baseDirectory.value / "src"
 )
 
@@ -23,15 +72,8 @@ lazy val parsley = project.settings(
 	name := "parsley",
 	version := "0.1.0-SNAPSHOT",
 	scalaVersion := "2.12.4",
-	scalacOptions ++= Seq(
-		"-target:jvm-1.8",
-		"-encoding", "UTF-8",
-		"-unchecked",
-		"-deprecation",
-		"-Xfuture",
-		"-Ypartial-unification",
-		//			"-Xlog-implicits",
-	),
+	commonSettings,
+
 	scalaSource in Compile := baseDirectory.value / "src"
 )
 
@@ -39,28 +81,11 @@ lazy val meerkat = project in file("Meerkat")
 
 lazy val JmhVersion = "1.20"
 
-lazy val `scala-parsers` = (project in file(".")).settings(
+lazy val `scala-parser-benchmarks` = (project in file(".")).settings(
 	organization := "net.kurobako",
-	name := "scala-parsers",
+	name := "scala-parser-benchmarks",
 	version := "0.1.0-SNAPSHOT",
-	scalaVersion := "2.12.4",
-	scalacOptions ++= Seq(
-		"-target:jvm-1.8",
-		"-encoding", "UTF-8",
-		"-unchecked",
-		"-deprecation",
-		"-Xfuture",
-		"-Ywarn-dead-code",
-		"-Ywarn-numeric-widen",
-		"-Ywarn-value-discard",
-		"-Ywarn-unused",
-		"-Ypartial-unification",
-		//			"-Xlog-implicits",
-	),
-	javacOptions ++= Seq(
-		"-target", "1.8",
-		"-source", "1.8",
-		"-Xlint:deprecation"),
+	commonSettings,
 	libraryDependencies ++= Seq(
 
 		"org.tpolecat" %% "atto-core" % "0.6.2-M1",
