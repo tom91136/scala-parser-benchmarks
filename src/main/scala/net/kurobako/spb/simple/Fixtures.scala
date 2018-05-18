@@ -135,8 +135,9 @@ object ParserForScalaFixtures {
 
 object ParsleyFixtures {
 
-	import parsley.Parsley.chainl1
-	import parsley.Parsley.char
+	import parsley.Char._
+	import parsley.Combinator.chainl1
+	import parsley.Parsley._
 	import parsley._
 
 	@inline final def collect(parser: Parsley[Int], input: String): Simple.Result = {
@@ -149,7 +150,7 @@ object ParsleyFixtures {
 	}
 	final val _chainL = chainL()
 	@inline final def chainL(): Parsley[Int] = {
-		chainl1(char('1') <#> (_.toInt), char('+') #> ((x: Int) => (y: Int) => x + y))
+		chainl1('1' <#> (_.toInt), '+' #> ((x: Int, y: Int) => x + y))
 	}
 }
 

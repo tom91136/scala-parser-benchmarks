@@ -1,9 +1,17 @@
+import sbt.Keys.scalaVersion
 
 enablePlugins(JmhPlugin)
 
 
 lazy val commonSettings = Seq(
 	scalaVersion := "2.12.6",
+	javacOptions ++= Seq(
+		"-target", "1.8",
+		"-source", "1.8",
+		"-Xlint:deprecation")
+)
+
+lazy val scalacLintAll = Seq(
 	scalacOptions ++= Seq(
 		"-target:jvm-1.8",
 		"-encoding", "UTF-8",
@@ -30,7 +38,7 @@ lazy val commonSettings = Seq(
 		"-Xlint:nullary-override",
 		"-Xlint:nullary-unit",
 		"-Xlint:option-implicit",
-		"-Xlint:package-object-classes",
+		"-Xlint:package-object-classes", // too widespread
 		"-Xlint:poly-implicit-overload",
 		"-Xlint:private-shadow",
 		"-Xlint:stars-align",
@@ -54,10 +62,6 @@ lazy val commonSettings = Seq(
 		"-Ywarn-value-discard",
 		"-Ypartial-unification",
 	),
-	javacOptions ++= Seq(
-		"-target", "1.8",
-		"-source", "1.8",
-		"-Xlint:deprecation"),
 )
 
 
@@ -65,6 +69,15 @@ lazy val `parsec-for-scala` = project.settings(
 	name := "parsec-for-scala",
 	version := "0.1.0-SNAPSHOT",
 	commonSettings,
+	scalacOptions ++= Seq(
+		"-target:jvm-1.8",
+		"-encoding", "UTF-8",
+		"-unchecked",
+		"-deprecation",
+		"-Xfuture",
+		"-Ypartial-unification",
+		//			"-Xlog-implicits",
+	),
 	scalaSource in Compile := baseDirectory.value / "src"
 )
 
@@ -73,7 +86,8 @@ lazy val parsley = project.settings(
 	version := "0.1.0-SNAPSHOT",
 	scalaVersion := "2.12.4",
 	commonSettings,
-
+	// XXX remove when parsley fixes hard dependency on fastparse
+	libraryDependencies += "com.lihaoyi" %% "fastparse" % "1.0.0",
 	scalaSource in Compile := baseDirectory.value / "src"
 )
 
@@ -86,6 +100,7 @@ lazy val `scala-parser-benchmarks` = (project in file(".")).settings(
 	name := "scala-parser-benchmarks",
 	version := "0.1.0-SNAPSHOT",
 	commonSettings,
+	scalacLintAll,
 	libraryDependencies ++= Seq(
 
 		"org.tpolecat" %% "atto-core" % "0.6.2-M1",

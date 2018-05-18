@@ -4,3 +4,6 @@
 [submodule "Meerkat"]
 	path = Meerkat
 	url = https://github.com/meerkat-parser/Meerkat.git
+[submodule "parsley"]
+	path = parsley
+	url = https://github.com/J-mie6/Parsley.git
