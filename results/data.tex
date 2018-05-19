@@ -14,9 +14,12 @@
 			ytick=data,
 			yticklabels from table={data.txt}{method},
 			xlabel=ns/op,
+			xmajorgrids,
+			ymajorgrids,
+			xmin=0,xmax=15000,
 			ylabel=method,
 			]
-				\addplot [color=blue, only marks,]
+				\addplot [color=blue, only marks,mark=*, mark size=1pt, ]
 				plot [error bars/.cd, x dir = both, x explicit]
 				table[ y = id, x = score, x error = error]{data.txt};
 			\end{axis}

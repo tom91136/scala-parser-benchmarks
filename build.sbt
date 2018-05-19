@@ -84,10 +84,7 @@ lazy val `parsec-for-scala` = project.settings(
 lazy val parsley = project.settings(
 	name := "parsley",
 	version := "0.1.0-SNAPSHOT",
-	scalaVersion := "2.12.4",
 	commonSettings,
-	// XXX remove when parsley fixes hard dependency on fastparse
-	libraryDependencies += "com.lihaoyi" %% "fastparse" % "1.0.0",
 	scalaSource in Compile := baseDirectory.value / "src"
 )
 

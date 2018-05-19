@@ -6,15 +6,18 @@ of common Scala parsing libraries.
 Included:
 
  * [FastParse](https://github.com/lihaoyi/fastparse)
- * [parsec-for-scala](https://bitbucket.org/J_mie6/parsec-for-scala)
- * [parsec-for-scala(parsley)](https://bitbucket.org/J_mie6/parsec-for-scala)
+ * [Parsley](https://github.com/J-mie6/Parsley)
  * [atto](http://tpolecat.github.io/atto/)
  * [scala-parser-combinators](https://github.com/scala/scala-parser-combinators)
+ * [parsec-for-scala](https://bitbucket.org/J_mie6/parsec-for-scala)
  * [Meerkat](http://meerkat-parser.github.io/index.html)
 
 Pending:
 
  * [parboiled2](https://github.com/sirthias/parboiled2)
+ * [parseback](https://github.com/djspiewak/parseback)
+ * [fcd](https://github.com/b-studios/fcd)
+ 
 
 **Note**
 
@@ -40,7 +43,7 @@ Benchmark machine:
 # Benchmark mode: Average time, time/op
 
 Linux 4.15.4-300.fc27.x86_64 #1 SMP Mon Feb 19 23:31:15 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
-Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz 
+Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz OC'ed @ 4.50Ghz
 32GB RAM
  
 ```
