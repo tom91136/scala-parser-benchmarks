@@ -98,12 +98,16 @@ lazy val `scala-parser-benchmarks` = (project in file(".")).settings(
 	version := "0.1.0-SNAPSHOT",
 	commonSettings,
 	scalacLintAll,
+	resolvers += "bintray-djspiewak-maven" at "https://dl.bintray.com/djspiewak/maven",
 	libraryDependencies ++= Seq(
 
 		// parser dependencies
 		"org.tpolecat" %% "atto-core" % "0.6.2-M1",
 		"org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.0",
 		"com.lihaoyi" %% "fastparse" % "1.0.0",
+		"com.codecommit" %% "parseback-core" % "0.4.0-f0c3683",
+		"com.codecommit" %% "parseback-cats" % "0.3",
+
 
 		"org.openjdk.jmh" % "jmh-core" % JmhVersion,
 		"org.openjdk.jmh" % "jmh-generator-annprocess" % JmhVersion % Compile,

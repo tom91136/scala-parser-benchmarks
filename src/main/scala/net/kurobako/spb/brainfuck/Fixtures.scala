@@ -156,6 +156,9 @@ object FastParseFixtures {
 	}
 }
 
+
+
+
 object AttoFixtures {
 
 	import atto.parser.character._
@@ -212,4 +215,37 @@ object ScalaParserCombinatorFixtures {
 		p.ws ~> p.bf
 	}
 
+}
+
+
+// TODO resync with stable to see if it works at all
+object ParsebackFixtures {
+
+	import parseback.Whitespace
+	import parseback._
+
+
+	implicit val W: Whitespace = Whitespace(literal("\n+ "))
+
+	type Parser[A] = parseback.Parser[A]
+
+	final val _parser: Parser[List[BrainFuckOp]] = parser()
+	final def parser(): Parser[List[BrainFuckOp]] = {
+		lazy val ops: Parser[List[BrainFuckOp]] =
+			("<" ^^^ LeftPointer
+			 | ">" ^^^ RightPointer
+			 | "+" ^^^ Increment
+			 | "-" ^^^ Decrement
+			 | "." ^^^ Output
+			 | "," ^^^ Input
+			 | (("[" ~> (ops | Parser.Epsilon(Nil)) <~ "]") ^^ { (_, xs) => Loop(xs) })) *
+
+		//		lazy val loop: Parser[List[BrainFuckOp]] =
+		//			("[" ~> (expr | Parser.Epsilon(Nil)) <~ "]") ^^ { (_, xs) => Loop(xs) :: Nil }
+		//
+		//		lazy val expr: Parser[List[BrainFuckOp]] =
+		//			((loop | (ops +)) *).map {_.flatten.toList} // empty should fail
+		//		expr
+		ops
+	}
 }

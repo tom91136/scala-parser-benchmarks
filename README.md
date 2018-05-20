@@ -12,10 +12,14 @@ Included:
  * [parsec-for-scala](https://bitbucket.org/J_mie6/parsec-for-scala)
  * [Meerkat](http://meerkat-parser.github.io/index.html)
 
+Attempted:
+
+ * [parseback](https://github.com/djspiewak/parseback) - failed to parse a BF grammar even after 
+ transformation
+
 Pending:
 
  * [parboiled2](https://github.com/sirthias/parboiled2)
- * [parseback](https://github.com/djspiewak/parseback)
  * [fcd](https://github.com/b-studios/fcd)
  
 

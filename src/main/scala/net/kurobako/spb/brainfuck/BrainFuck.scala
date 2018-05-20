@@ -59,5 +59,13 @@ class BrainFuck {
 	@Benchmark def warmFastParse(ctx: Context): Result[BFOps] = !!(collectFastParse(FastParseFixtures._parser, ctx.input))
 	@Benchmark def coldFastParse(ctx: Context): Result[BFOps] = !!(collectFastParse(FastParseFixtures.parser(), ctx.input))
 
+
+
+
+	// FIXME resync and check
+	// parseback
+//	@Benchmark def warmParseback(ctx: Context): Result[BFOps] = !!(collectParseback(ParsebackFixtures._parser, ctx.input))
+//	@Benchmark def coldParseback(ctx: Context): Result[BFOps] = !!(collectParseback(ParsebackFixtures.parser(), ctx.input))
+
 }
 

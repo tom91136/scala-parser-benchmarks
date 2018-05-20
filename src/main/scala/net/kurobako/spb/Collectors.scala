@@ -65,6 +65,16 @@ object Collectors {
 			case f: Failure[Char, String] => Left(f.msg)
 		}
 	}
+
+	@inline final def collectParseback[A](parser: parseback.Parser[A], input: String): Result[A] = {
+		import cats._
+		import parseback.util.Catenable
+		import parseback.{LineStream, ParseError}
+		val foo = LineStream[Eval](input)
+		val value: Either[List[ParseError], Catenable[A]] = parser(foo).value
+		value.fold({ es => Left(es.toString) }, { xs => println(xs); Right(xs.toList.head) })
+	}
+
 	@inline final def collectMeerkat[A](parser: org.meerkat.parsers.&[org.meerkat.parsers.Parsers.Nonterminal, A],
 										input: String): Result[A] = {
 		import org.meerkat.parsers.exec
