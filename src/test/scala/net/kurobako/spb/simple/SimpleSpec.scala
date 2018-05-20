@@ -1,9 +1,8 @@
-package net.kurobako.spb
+package net.kurobako.spb.simple
 
 import net.kurobako.spb
-import net.kurobako.spb.simple.Simple
-import org.scalatest.{EitherValues, FlatSpec, Matchers}
 import org.scalatest.prop.TableDrivenPropertyChecks._
+import org.scalatest.{EitherValues, FlatSpec, Matchers}
 
 class SimpleSpec extends FlatSpec with Matchers with EitherValues {
 

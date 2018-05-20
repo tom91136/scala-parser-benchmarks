@@ -1,7 +1,5 @@
 package net.kurobako.spb.simple
 
-import net.kurobako.spb.simple.Simple.Result
-
 import scala.annotation.tailrec
 import scala.util.Try
 
@@ -60,8 +58,6 @@ object ScalaParserCombinatorFixtures {
 
 	import scala.util.parsing.combinator._
 
-	final val p = new SPCParser
-
 	final class SPCParser extends RegexParsers {
 		// XXX we need those implicit conversions but NOT the regex stuff
 		@inline def x: Parser[Int] = literal("1") ^^ { x: String => x.head.toInt }
@@ -78,15 +74,11 @@ object ScalaParserCombinatorFixtures {
 		}
 	}
 
-	@inline final def collect(parser_ : p.Parser[Int], input: String): Result = {
-		p.parse(parser_, input) match {
-			case p.Success(v: Int, _) => Right(v)
-			case v: p.NoSuccess       => Left(v.msg)
-		}
-	}
-
 	final val _chainL = chainL()
-	@inline final def chainL(): p.Parser[Int] = p.chainl(p.x, p.y)
+	@inline final def chainL(): SPCParser#Parser[Int] = {
+		val p = new SPCParser
+		p.chainl(p.x, p.y)
+	}
 
 }
 
@@ -95,10 +87,6 @@ object AttoFixtures {
 	import atto._
 	import Atto._
 
-	@inline final def collect(_parser: Parser[Int], input: String): Result = {
-		// XXX apparently, naming the parser `parser` shadows some import...
-		_parser.parseOnly(input).either
-	}
 	final val _chainL = chainL()
 	@inline final def chainL(): Parser[Int] = {
 
@@ -115,16 +103,12 @@ object AttoFixtures {
 	}
 }
 
-object ParserForScalaFixtures {
+object ParsecForScalaFixtures {
 
 	import parsec.Char._
 	import parsec.Combinator.chainl1
 	import parsec._
 
-	@inline final def collect(parser: Parser[Int], input: String): Simple.Result = {
-		runParser[Stream[String, Char], Unit, Int](parser, (), "", input)
-			.left.map {_.toString()}
-	}
 	final val _chainL = chainL()
 	@inline final def chainL(): Parser[Int] = {
 		val x: Parser[Int] = string("1") <#> {_ (0).toInt}
@@ -140,14 +124,6 @@ object ParsleyFixtures {
 	import parsley.Parsley._
 	import parsley._
 
-	@inline final def collect(parser: Parsley[Int], input: String): Simple.Result = {
-		// XXX if SMP, uncomment line below
-		// implicit val ctx = parsley.giveContext
-		runParserFastUnsafe(parser, input) match {
-			case Success(x)   => Right(x)
-			case Failure(msg) => Left(msg)
-		}
-	}
 	final val _chainL = chainL()
 	@inline final def chainL(): Parsley[Int] = {
 		chainl1('1' <#> (_.toInt), '+' #> ((x: Int, y: Int) => x + y))
@@ -159,18 +135,17 @@ object MeerkatFixtures {
 
 	import org.meerkat.Syntax._
 	import org.meerkat.parsers._
-	import Parsers._
+	import org.meerkat.parsers.Parsers._
 
-	@inline final def bnf() = {
+	final val _bnf = bnf()
+	@inline final def bnf(): Nonterminal & Int = {
+		/*_*/
 		// XXX so we can't do String.apply(Int) because it got shadowed
 		val One = syn {"1" ^ { x: String => x.charAt(0).toInt }}
 		//XXX need to improve this
 		lazy val P: Nonterminal & Int = syn(P ~ "+" ~ One & { case a ~ b => a + b } | One)
+		/*_*/
 		P
-	}
-	final val _bnf = bnf()
-	@inline final def collect(parser: Nonterminal & Int, input: String): Simple.Result = {
-		exec(parser, input).left.map {_.toString}
 	}
 
 }
@@ -179,14 +154,7 @@ object FastParseFixtures {
 
 	import fastparse.all
 	import fastparse.all._
-	import fastparse.core.Parsed.{Failure, Success}
 
-	@inline final def collect[B](parser: Parser[Int], input: String): Result = {
-		parser.parse(input) match {
-			case Success(value, _)        => Right(value)
-			case f: Failure[Char, String] => Left(f.msg)
-		}
-	}
 	final val _foldC = foldC()
 	@inline final def foldC(): Parser[Int] = {
 		def chainlf[A](p: Parser[A], op: Parser[A => A => A]): Parser[A] = {

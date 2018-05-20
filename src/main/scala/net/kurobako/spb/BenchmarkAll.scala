@@ -1,10 +1,20 @@
 package net.kurobako.spb
 
+import net.kurobako.spb.brainfuck.BrainFuck
 import net.kurobako.spb.simple.Simple
+import org.openjdk.jmh.results.format.ResultFormatType
 import org.openjdk.jmh.runner.{Runner, RunnerException}
 import org.openjdk.jmh.runner.options.OptionsBuilder
 
 object BenchmarkAll {
+
+	final val Iterations = 15
+	final val Forks      = 2
+
+	final val Benchmarks = Seq[Class[_]](
+		classOf[Simple],
+		classOf[BrainFuck],
+	)
 
 	@throws[RunnerException]
 	def main(args: Array[String]): Unit = {
@@ -12,15 +22,17 @@ object BenchmarkAll {
 
 		import scala.collection.JavaConverters._
 
-		val iter = 15
-		val result = new Runner(new OptionsBuilder()
-			.include(classOf[Simple].getSimpleName)
-			.warmupIterations(iter)
-			.measurementIterations(iter)
-			.forks(2)
+		val builder = new OptionsBuilder()
+			.warmupIterations(Iterations)
+			.measurementIterations(Iterations)
+			.forks(Forks)
 			.shouldFailOnError(true)
-			.build).run.asScala.toSeq
+			.resultFormat(ResultFormatType.JSON)
+			.result("docs/data.json")
 
+		val result = new Runner(
+			Benchmarks.foldLeft(builder) { (acc, x) => acc.include(x.getSimpleName) }.build)
+			.run.asScala.toSeq
 
 		val table = result
 			.map { v =>
@@ -33,6 +45,7 @@ object BenchmarkAll {
 				List(i.toString, method, score.toString, error.toString)
 			}
 
+		// for latex
 		println("Result:\n" +
 				(Seq("id", "method", "score", "error") +: table)
 					.map {_.mkString(" ")}.mkString("\n"))

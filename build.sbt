@@ -100,21 +100,20 @@ lazy val `scala-parser-benchmarks` = (project in file(".")).settings(
 	scalacLintAll,
 	libraryDependencies ++= Seq(
 
+		// parser dependencies
 		"org.tpolecat" %% "atto-core" % "0.6.2-M1",
-
 		"org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.0",
-
 		"com.lihaoyi" %% "fastparse" % "1.0.0",
-
 
 		"org.openjdk.jmh" % "jmh-core" % JmhVersion,
 		"org.openjdk.jmh" % "jmh-generator-annprocess" % JmhVersion % Compile,
+
 		"org.typelevel" %% "cats-core" % "1.0.1",
 		"org.scalatest" %% "scalatest" % "3.0.1" % Test
 	),
 	mainClass in Compile := Some("net.kurobako.spb.Simple"),
 )
-	.aggregate(`parsec-for-scala`, parsley, meerkat)
+//	.aggregate(`parsec-for-scala`, parsley, meerkat)
 	.dependsOn(`parsec-for-scala`, parsley, meerkat)
 
 

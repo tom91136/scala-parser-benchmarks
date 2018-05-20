@@ -1,0 +1,18 @@
+Notice for file:
+
+helloworld.bf
+helloworld_comments.bf
+
+Taken from https://en.wikipedia.org/wiki/Brainfuck
+(Creative Commons Attribution-Sharealike 3.0 Unported License)
+
+Notice for file:
+
+mandelbrot.bf
+fizzbuzz.bf
+
+Taken from https://github.com/pablojorge/brainfuck
+(MIT license)
+
+
+

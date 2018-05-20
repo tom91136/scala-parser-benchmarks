@@ -2,12 +2,9 @@ package net.kurobako.spb.simple
 
 import java.util.concurrent.TimeUnit
 
-import net.kurobako.spb.simple.Simple.{Context, Result}
+import net.kurobako.spb.Collectors._
+import net.kurobako.spb.simple.Simple.Context
 import org.openjdk.jmh.annotations._
-import org.openjdk.jmh.runner.options.OptionsBuilder
-import org.openjdk.jmh.runner.{Runner, RunnerException}
-
-import scala.util.Either
 
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
@@ -21,39 +18,6 @@ object Simple {
 		var token: String = _
 		@Setup def setup(): Unit = {token = List.tabulate(N) { _ => "1" }.mkString("+")}
 	}
-	@throws[RunnerException]
-	def main(args: Array[String]): Unit = {
-		import cats.implicits._
-
-		import scala.collection.JavaConverters._
-
-		val iter = 15
-		val result = new Runner(new OptionsBuilder()
-			.include(classOf[Simple].getSimpleName)
-			.warmupIterations(iter)
-			.measurementIterations(iter)
-			.forks(2)
-			.shouldFailOnError(true)
-			.build).run.asScala.toSeq
-
-
-		val table = result
-			.map { v =>
-				val result = v.getPrimaryResult
-				(result.getLabel, result.getScore, result.getScoreError)
-			}
-			.sortBy { case (_, score, _) => score }
-			.zipWithIndex
-			.map { case ((method, score, error), i) =>
-				List(i.toString, method, score.toString, error.toString)
-			}
-
-		println("Result:\n" +
-				(Seq("id", "method", "score", "error") +: table)
-					.map {_.mkString(" ")}.mkString("\n"))
-	}
-
-	type Result = Either[String, Int]
 
 }
 
@@ -62,41 +26,42 @@ object Simple {
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 class Simple {
 
+
 	// baselines
-	@Benchmark def baselineTailRecursiveTry(ctx: Context): Result = Baselines.tailRecursiveTry(ctx.token)
-	@Benchmark def baselineRecursiveDecent(ctx: Context): Result = Baselines.recursiveDecent(ctx.token)
+	@Benchmark def baselineTailRecursiveTry(ctx: Context): Result[Int] = !!(Baselines.tailRecursiveTry(ctx.token))
+	@Benchmark def baselineRecursiveDecent(ctx: Context): Result[Int] = !!(Baselines.recursiveDecent(ctx.token))
 
 	// scala-parser-combinator
-	@Benchmark def warmScalaParserCombinatorChainL(ctx: Context): Result = ScalaParserCombinatorFixtures.collect(ScalaParserCombinatorFixtures._chainL, ctx.token)
-	@Benchmark def coldScalaParserCombinatorChainL(ctx: Context): Result = ScalaParserCombinatorFixtures.collect(ScalaParserCombinatorFixtures.chainL(), ctx.token)
+	@Benchmark def warmScalaParserCombinatorChainL(ctx: Context): Result[Int] = !!(collectSPC(ScalaParserCombinatorFixtures._chainL, ctx.token))
+	@Benchmark def coldScalaParserCombinatorChainL(ctx: Context): Result[Int] = !!(collectSPC(ScalaParserCombinatorFixtures.chainL(), ctx.token))
 
 	// atto
-	@Benchmark def warmAttoChainL(ctx: Context): Result = AttoFixtures.collect(AttoFixtures._chainL, ctx.token)
-	@Benchmark def coldAttoChainL(ctx: Context): Result = AttoFixtures.collect(AttoFixtures.chainL(), ctx.token)
+	@Benchmark def warmAttoChainL(ctx: Context): Result[Int] = !!(collectAtto(AttoFixtures._chainL, ctx.token))
+	@Benchmark def coldAttoChainL(ctx: Context): Result[Int] = !!(collectAtto(AttoFixtures.chainL(), ctx.token))
 
 	// parsec-for-scala
-	@Benchmark def warmParsecForScalaChainL(ctx: Context): Result = ParserForScalaFixtures.collect(ParserForScalaFixtures._chainL, ctx.token)
-	@Benchmark def coldParsecForScalaChainL(ctx: Context): Result = ParserForScalaFixtures.collect(ParserForScalaFixtures.chainL(), ctx.token)
+	@Benchmark def warmParsecForScalaChainL(ctx: Context): Result[Int] = !!(collectParsec(ParsecForScalaFixtures._chainL, ctx.token))
+	@Benchmark def coldParsecForScalaChainL(ctx: Context): Result[Int] = !!(collectParsec(ParsecForScalaFixtures.chainL(), ctx.token))
 
 	// meerkat
-	@Benchmark def warmMeerkatBnf(ctx: Context): Result = MeerkatFixtures.collect(MeerkatFixtures._bnf, ctx.token)
-	@Benchmark def coldMeerkatBnf(ctx: Context): Result = MeerkatFixtures.collect(MeerkatFixtures.bnf(), ctx.token)
+	@Benchmark def warmMeerkatBnf(ctx: Context): Result[Int] = !!(collectMeerkat(MeerkatFixtures._bnf, ctx.token))
+	@Benchmark def coldMeerkatBnf(ctx: Context): Result[Int] = !!(collectMeerkat(MeerkatFixtures.bnf(), ctx.token))
 
 	// parsely
-	@Benchmark def warmParsleyChainL(ctx: Context): Result = ParsleyFixtures.collect(ParsleyFixtures._chainL, ctx.token)
-	@Benchmark def coldParsleyChainL(ctx: Context): Result = ParsleyFixtures.collect(ParsleyFixtures.chainL(), ctx.token)
+	@Benchmark def warmParsleyChainL(ctx: Context): Result[Int] = !!(collectParsley(ParsleyFixtures._chainL, ctx.token))
+	@Benchmark def coldParsleyChainL(ctx: Context): Result[Int] = !!(collectParsley(ParsleyFixtures.chainL(), ctx.token))
 
 	// fastparse
-	@Benchmark def warmFastParseBindFoldCurried(ctx: Context): Result = FastParseFixtures.collect(FastParseFixtures._foldC, ctx.token)
-	@Benchmark def coldFastParseBindFoldCurried(ctx: Context): Result = FastParseFixtures.collect(FastParseFixtures.foldC(), ctx.token)
-	@Benchmark def warmFastParseBindFoldTuple2(ctx: Context): Result = FastParseFixtures.collect(FastParseFixtures._foldT2, ctx.token)
-	@Benchmark def coldFastParseBindFoldTuple2(ctx: Context): Result = FastParseFixtures.collect(FastParseFixtures.foldT2(), ctx.token)
-	@Benchmark def warmFastParseBindRecursiveCurried(ctx: Context): Result = FastParseFixtures.collect(FastParseFixtures._recursiveC, ctx.token)
-	@Benchmark def coldFastParseBindRecursiveCurried(ctx: Context): Result = FastParseFixtures.collect(FastParseFixtures.recursiveC(), ctx.token)
-	@Benchmark def warmFastParseBindRecursiveTuple2(ctx: Context): Result = FastParseFixtures.collect(FastParseFixtures._recursiveT2, ctx.token)
-	@Benchmark def coldFastParseBindRecursiveTuple2(ctx: Context): Result = FastParseFixtures.collect(FastParseFixtures.recursiveT2(), ctx.token)
-	@Benchmark def warmFastParseRightRecursive(ctx: Context): Result = FastParseFixtures.collect(FastParseFixtures._rightRecursive, ctx.token)
-	@Benchmark def coldFastParseRightRecursive(ctx: Context): Result = FastParseFixtures.collect(FastParseFixtures.rightRecursive(), ctx.token)
+	@Benchmark def warmFastParseBindFoldCurried(ctx: Context): Result[Int] = !!(collectFastParse(FastParseFixtures._foldC, ctx.token))
+	@Benchmark def coldFastParseBindFoldCurried(ctx: Context): Result[Int] = !!(collectFastParse(FastParseFixtures.foldC(), ctx.token))
+	@Benchmark def warmFastParseBindFoldTuple2(ctx: Context): Result[Int] = !!(collectFastParse(FastParseFixtures._foldT2, ctx.token))
+	@Benchmark def coldFastParseBindFoldTuple2(ctx: Context): Result[Int] = !!(collectFastParse(FastParseFixtures.foldT2(), ctx.token))
+	@Benchmark def warmFastParseBindRecursiveCurried(ctx: Context): Result[Int] = !!(collectFastParse(FastParseFixtures._recursiveC, ctx.token))
+	@Benchmark def coldFastParseBindRecursiveCurried(ctx: Context): Result[Int] = !!(collectFastParse(FastParseFixtures.recursiveC(), ctx.token))
+	@Benchmark def warmFastParseBindRecursiveTuple2(ctx: Context): Result[Int] = !!(collectFastParse(FastParseFixtures._recursiveT2, ctx.token))
+	@Benchmark def coldFastParseBindRecursiveTuple2(ctx: Context): Result[Int] = !!(collectFastParse(FastParseFixtures.recursiveT2(), ctx.token))
+	@Benchmark def warmFastParseRightRecursive(ctx: Context): Result[Int] = !!(collectFastParse(FastParseFixtures._rightRecursive, ctx.token))
+	@Benchmark def coldFastParseRightRecursive(ctx: Context): Result[Int] = !!(collectFastParse(FastParseFixtures.rightRecursive(), ctx.token))
 
 }
 
