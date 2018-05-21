@@ -11,6 +11,7 @@ Included:
  * [scala-parser-combinators](https://github.com/scala/scala-parser-combinators)
  * [parsec-for-scala](https://bitbucket.org/J_mie6/parsec-for-scala)
  * [Meerkat](http://meerkat-parser.github.io/index.html)
+ * [parboiled2](https://github.com/sirthias/parboiled2)
 
 Attempted:
 
@@ -19,7 +20,6 @@ Attempted:
 
 Pending:
 
- * [parboiled2](https://github.com/sirthias/parboiled2)
  * [fcd](https://github.com/b-studios/fcd)
  
 

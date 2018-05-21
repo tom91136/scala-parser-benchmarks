@@ -67,5 +67,9 @@ class BrainFuck {
 //	@Benchmark def warmParseback(ctx: Context): Result[BFOps] = !!(collectParseback(ParsebackFixtures._parser, ctx.input))
 //	@Benchmark def coldParseback(ctx: Context): Result[BFOps] = !!(collectParseback(ParsebackFixtures.parser(), ctx.input))
 
+	// fastparse
+	@Benchmark def warmParboiled2(ctx: Context): Result[BFOps] = !!(collectParboiled2(Parboiled2Fixtures._parser, ctx.input))
+	@Benchmark def coldParboiled2(ctx: Context): Result[BFOps] = !!(collectParboiled2(Parboiled2Fixtures.parser(), ctx.input))
+
 }
 

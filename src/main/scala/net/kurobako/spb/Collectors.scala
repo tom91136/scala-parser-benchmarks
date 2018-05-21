@@ -75,6 +75,14 @@ object Collectors {
 		value.fold({ es => Left(es.toString) }, { xs => println(xs); Right(xs.toList.head) })
 	}
 
+
+	// parboiled2 expands to a macro so there is no way to execute a generic parser
+	@inline final def collectParboiled2[A](parser: String => Either[String, A],
+										   input: String): Result[A] = {
+		parser(input)
+	}
+
+
 	@inline final def collectMeerkat[A](parser: org.meerkat.parsers.&[org.meerkat.parsers.Parsers.Nonterminal, A],
 										input: String): Result[A] = {
 		import org.meerkat.parsers.exec
