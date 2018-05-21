@@ -88,7 +88,6 @@ lazy val parsley = project.settings(
 	scalaSource in Compile := baseDirectory.value / "src"
 )
 
-lazy val meerkat = project in file("Meerkat")
 
 lazy val JmhVersion = "1.20"
 
@@ -98,11 +97,13 @@ lazy val `scala-parser-benchmarks` = (project in file(".")).settings(
 	version := "0.1.0-SNAPSHOT",
 	commonSettings,
 	scalacLintAll,
+	resolvers += "jitpack" at "https://jitpack.io",
 	libraryDependencies ++= Seq(
 
 		// parser dependencies
 		"org.tpolecat" %% "atto-core" % "0.6.2-M1",
 		"org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.0",
+		"com.github.meerkat-parser" % "Meerkat" % "3e59173f1e",
 		"com.lihaoyi" %% "fastparse" % "1.0.0",
 
 		"org.openjdk.jmh" % "jmh-core" % JmhVersion,
@@ -113,7 +114,7 @@ lazy val `scala-parser-benchmarks` = (project in file(".")).settings(
 	),
 	mainClass in Compile := Some("net.kurobako.spb.Simple"),
 )
-//	.aggregate(`parsec-for-scala`, parsley, meerkat)
-	.dependsOn(`parsec-for-scala`, parsley, meerkat)
+	.aggregate(`parsec-for-scala`, parsley)
+	.dependsOn(`parsec-for-scala`, parsley)
 
 
