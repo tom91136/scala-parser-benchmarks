@@ -104,6 +104,7 @@ lazy val `scala-parser-benchmarks` = (project in file(".")).settings(
 		"org.tpolecat" %% "atto-core" % "0.6.2-M1",
 		"org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.0",
 		"com.github.meerkat-parser" % "Meerkat" % "3e59173f1e",
+		"org.parboiled" %% "parboiled" % "2.1.4",
 		"com.lihaoyi" %% "fastparse" % "1.0.0",
 
 		"org.openjdk.jmh" % "jmh-core" % JmhVersion,

@@ -26,11 +26,13 @@ class BrainFuckSpec extends FlatSpec with Matchers with EitherValues {
 			bf.warmAtto _,
 			bf.warmParsley _,
 			bf.warmFastParse _,
+			bf.warmParboiled2 _,
 
 			bf.coldScalaParserCombinator _,
 			bf.coldAtto _,
 			bf.coldParsley _,
-			bf.coldFastParse _
+			bf.coldFastParse _,
+			bf.coldParboiled2 _,
 		)) { method =>
 
 			forAll(Table(

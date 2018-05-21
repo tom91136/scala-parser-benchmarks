@@ -65,6 +65,14 @@ object Collectors {
 			case f: Failure[Char, String] => Left(f.msg)
 		}
 	}
+
+	// parboiled2 expands to a macro so there is no way to execute a generic parser
+	@inline final def collectParboiled2[A](parser: String => Either[String, A],
+										   input: String): Result[A] = {
+		parser(input)
+	}
+
+
 	@inline final def collectMeerkat[A](parser: org.meerkat.parsers.&[org.meerkat.parsers.Parsers.Nonterminal, A],
 										input: String): Result[A] = {
 		import org.meerkat.parsers.exec

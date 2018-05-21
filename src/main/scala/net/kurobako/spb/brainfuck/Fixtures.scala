@@ -182,6 +182,51 @@ object AttoFixtures {
 
 }
 
+
+object Parboiled2Fixtures {
+
+	import org.parboiled2._
+
+	class PB2Parser(val input: ParserInput) extends Parser {
+
+		def full: Rule1[Seq[BrainFuckOp]] = rule {WhiteSpace ~ expr ~ EOI}
+
+		/*_*/
+		def expr: Rule1[Seq[BrainFuckOp]] = rule {op *}
+		/*_*/
+
+		def op: Rule1[BrainFuckOp] = rule {
+			(tok('>') ~> { () => RightPointer }
+			 | tok('<') ~> { () => LeftPointer }
+			 | tok('+') ~> { () => Increment }
+			 | tok('-') ~> { () => Decrement }
+			 | tok('.') ~> { () => Output }
+			 | tok(',') ~> { () => Input }
+			 | (tok('[') ~ expr ~ tok(']')) ~> { xs: Seq[BrainFuckOp] => Loop(xs.toList) })
+		}
+
+		def tok(c: Char): Rule0 = rule {c ~ WhiteSpace}
+
+		def WhiteSpace: Rule0 = rule {
+			// XXX CharPredicate.All turns into a endless search for some reason
+			((CharPredicate("\n\r\t\f") ++ CharPredicate.Printable) -- CharPredicate("[]<>+-,.")) *
+		}
+
+	}
+
+
+	import org.parboiled2.Parser.DeliveryScheme.Either
+
+	final def _parser: String => Either[String, List[BrainFuckOp]] = parser()
+	final def parser(): String => Either[String, List[BrainFuckOp]] = { s: String =>
+		val parser = new PB2Parser(s)
+		parser.full.run().map {_.toList}.left.map { parser.formatError(_) }
+	}
+
+
+}
+
+
 object ScalaParserCombinatorFixtures {
 
 	import scala.util.parsing.combinator._
