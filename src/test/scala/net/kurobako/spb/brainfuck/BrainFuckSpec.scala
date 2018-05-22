@@ -60,6 +60,7 @@ class BrainFuckSpec extends FlatSpec with Matchers with EitherValues {
 				actual.map { ast =>
 					val in = new ByteArrayInputStream(Array.empty)
 					val out = new ByteArrayOutputStream()
+					//BrainFuckSpec.executeFixedMut(ast, in, out)
 					BrainFuckRuntime().execute(ast, in, out)
 					out.toString(StandardCharsets.UTF_8.toString)
 				}.map(normaliseLn).right.value shouldBe normaliseLn(expectedString)
@@ -73,18 +74,54 @@ object BrainFuckSpec {
 
 	// BF needs uint8, JVM doesn't have that
 	//XXX should extend AnyVal but toplevel worksheets don't support this for some reason
-	final case class UInt8 private(value: Int) {
-		def ++ : UInt8 = UInt8(if (value == 255) 0 else value + 1)
-		def -- : UInt8 = UInt8(if (value == 0) 255 else value - 1)
+	final case class UInt8 private(value: Int) extends AnyVal {
+		@inline def ++ : UInt8 = UInt8(if (value == 255) 0 else value + 1)
+		@inline def -- : UInt8 = UInt8(if (value == 0) 255 else value - 1)
 	}
 	final object UInt8 {
 		final lazy val Zero = UInt8(0)
-		def coerce(value: Int): UInt8 = UInt8(value)
+		@inline def coerce(value: Int): UInt8 = UInt8(value)
 	}
 
-	LongMap
+	def executeFixedMut(xs: Seq[BrainFuckOp], in: InputStream, out: OutputStream): Array[Int] = {
+
+		type UInt8T = Int
+
+		@inline def ++(value: UInt8T): UInt8T = if (value == 255) 0 else value + 1
+		@inline def --(value: UInt8T): UInt8T = if (value == 0) 255 else value - 1
+
+		val cells: Array[UInt8T] = Array.ofDim(30000)
+		var pointer: Int = 0
+
+		@tailrec def step(xs: List[BrainFuckOp]): Unit = {
+			xs match {
+				case LeftPointer :: ys  => pointer = pointer - 1; step(ys)
+				case RightPointer :: ys => pointer = pointer + 1; step(ys)
+				case Increment :: ys    =>
+					cells(pointer) = ++(cells(pointer)); step(ys)
+				case Decrement :: ys    =>
+					cells(pointer) = --(cells(pointer)); step(ys)
+				case Output :: ys       =>
+					out.write(cells(pointer))
+					step(ys)
+				case Input :: ys        =>
+					val read = in.read()
+					val coerced = if (read == -1) 0 else read
+					cells(pointer) = coerced
+					step(ys)
+				case (l@Loop(ys)) :: zs =>
+					val current = cells(pointer)
+					if (current == 0) step(zs) // JZ
+					else step(ys ::: (l :: zs)) // JNZ
+				case Nil                => ()
+			}
+		}
+		step(xs.toList)
+		cells
+	}
+
 	case class BrainFuckRuntime(cells: Map[Long, UInt8] = LongMap(), pointer: Long = 0) {
-		def update[A, B](xs: Map[A, B], a: A, default: B)(f: B => B): Map[A, B] = {
+		@inline def update[A, B](xs: Map[A, B], a: A, default: B)(f: B => B): Map[A, B] = {
 			xs + (a -> f(xs.getOrElse(a, default)))
 		}
 		def execute(xs: Seq[BrainFuckOp], in: InputStream, out: OutputStream): BrainFuckRuntime = {

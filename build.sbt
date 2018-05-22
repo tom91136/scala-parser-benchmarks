@@ -85,6 +85,10 @@ lazy val parsley = project.settings(
 	name := "parsley",
 	version := "0.1.0-SNAPSHOT",
 	commonSettings,
+	scalacOptions ++= Seq(
+		"-opt:l:inline",
+		"-opt-inline-from"
+	),
 	scalaSource in Compile := baseDirectory.value / "src"
 )
 

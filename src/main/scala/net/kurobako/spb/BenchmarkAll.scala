@@ -2,6 +2,7 @@ package net.kurobako.spb
 
 import net.kurobako.spb.brainfuck.BrainFuck
 import net.kurobako.spb.simple.Simple
+import org.openjdk.jmh.profile.{GCProfiler, HotspotCompilationProfiler, StackProfiler}
 import org.openjdk.jmh.results.format.ResultFormatType
 import org.openjdk.jmh.runner.{Runner, RunnerException}
 import org.openjdk.jmh.runner.options.OptionsBuilder
@@ -26,6 +27,9 @@ object BenchmarkAll {
 			.warmupIterations(Iterations)
 			.measurementIterations(Iterations)
 			.forks(Forks)
+//    		.addProfiler(classOf[StackProfiler])
+//    		.addProfiler(classOf[GCProfiler])
+//    		.addProfiler(classOf[HotspotCompilationProfiler])
 			.shouldFailOnError(true)
 			.resultFormat(ResultFormatType.JSON)
 			.result("docs/data.json")

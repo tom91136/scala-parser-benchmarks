@@ -157,8 +157,6 @@ object FastParseFixtures {
 }
 
 
-
-
 object AttoFixtures {
 
 	import atto.parser.character._
@@ -199,31 +197,52 @@ object Parboiled2Fixtures {
 		/*_*/
 
 		def op: Rule1[BrainFuckOp] = rule {
-			(tok('>') ~> { () => RightPointer }
-			 | tok('<') ~> { () => LeftPointer }
-			 | tok('+') ~> { () => Increment }
-			 | tok('-') ~> { () => Decrement }
-			 | tok('.') ~> { () => Output }
-			 | tok(',') ~> { () => Input }
-			 | (tok('[') ~ expr ~ tok(']')) ~> { xs: Seq[BrainFuckOp] => Loop(xs.toList) })
+			// optimised single char lookahead
+			run {
+				(cursorChar: @switch) match {
+					case '<' => tok('<') ~> { () => LeftPointer }
+					case '>' => tok('>') ~> { () => RightPointer }
+					case '+' => tok('+') ~> { () => Increment }
+					case '-' => tok('-') ~> { () => Decrement }
+					case '.' => tok('.') ~> { () => Output }
+					case ',' => tok(',') ~> { () => Input }
+					case '[' => (tok('[') ~ expr ~ tok(']')) ~> { xs: Seq[BrainFuckOp] => Loop(xs.toList) }
+					case _   => MISMATCH
+				}
+			}
 		}
+
+		//		def op: Rule1[BrainFuckOp] = rule {
+		//			(tok('>') ~> { () => RightPointer }
+		//			 | tok('<') ~> { () => LeftPointer }
+		//			 | tok('+') ~> { () => Increment }
+		//			 | tok('-') ~> { () => Decrement }
+		//			 | tok('.') ~> { () => Output }
+		//			 | tok(',') ~> { () => Input }
+		//			 | (tok('[') ~ expr ~ tok(']')) ~> { xs: Seq[BrainFuckOp] => Loop(xs.toList) })
+		//		}
 
 		def tok(c: Char): Rule0 = rule {c ~ WhiteSpace}
 
+		private final val _EOI = EOI // stable identifier
 		def WhiteSpace: Rule0 = rule {
-			// XXX CharPredicate.All turns into a endless search for some reason
-			((CharPredicate("\n\r\t\f") ++ CharPredicate.Printable) -- CharPredicate("[]<>+-,.")) *
+			CharPredicate.from { c =>
+				(c: @switch) match {
+					case '>' | '<' | '+' | '-' | '.' | ',' | '[' | ']' | `_EOI` => false
+					case _                                                      => true
+				}
+			} *
 		}
 
 	}
 
-
 	import org.parboiled2.Parser.DeliveryScheme.Either
 
+	// XXX cold/hot doesn't make a lot of sense here
 	final def _parser: String => Either[String, List[BrainFuckOp]] = parser()
 	final def parser(): String => Either[String, List[BrainFuckOp]] = { s: String =>
 		val parser = new PB2Parser(s)
-		parser.full.run().map {_.toList}.left.map { parser.formatError(_) }
+		parser.full.run().map {_.toList}.left.map {parser.formatError(_)}
 	}
 
 

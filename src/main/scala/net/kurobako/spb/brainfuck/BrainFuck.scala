@@ -26,7 +26,8 @@ object BrainFuck {
 		@Param(Array(
 			"brainfuck/helloworld.bf",
 			"brainfuck/helloworld_comments.bf",
-			"brainfuck/mandelbrot.bf"
+//			"brainfuck/fizzbuzz.bf"
+//			"brainfuck/mandelbrot.bf"
 		))
 		var file : String = _
 		var input: String = _
@@ -58,8 +59,6 @@ class BrainFuck {
 	// fastparse
 	@Benchmark def warmFastParse(ctx: Context): Result[BFOps] = !!(collectFastParse(FastParseFixtures._parser, ctx.input))
 	@Benchmark def coldFastParse(ctx: Context): Result[BFOps] = !!(collectFastParse(FastParseFixtures.parser(), ctx.input))
-
-
 
 
 	// FIXME resync and check
