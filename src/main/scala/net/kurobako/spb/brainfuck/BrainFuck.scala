@@ -12,7 +12,7 @@ import scala.io.Source
 
 object BrainFuck {
 
-	trait BrainFuckOp
+	sealed trait BrainFuckOp
 	case object RightPointer extends BrainFuckOp
 	case object LeftPointer extends BrainFuckOp
 	case object Increment extends BrainFuckOp
@@ -26,8 +26,8 @@ object BrainFuck {
 		@Param(Array(
 			"brainfuck/helloworld.bf",
 			"brainfuck/helloworld_comments.bf",
-//			"brainfuck/fizzbuzz.bf"
-//			"brainfuck/mandelbrot.bf"
+			"brainfuck/fizzbuzz.bf",
+			"brainfuck/mandelbrot.bf",
 		))
 		var file : String = _
 		var input: String = _

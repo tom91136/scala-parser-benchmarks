@@ -1,6 +1,7 @@
 package net.kurobako.spb
 
 import net.kurobako.spb.brainfuck.BrainFuck
+import net.kurobako.spb.json.Json
 import net.kurobako.spb.simple.Simple
 import org.openjdk.jmh.profile.{GCProfiler, HotspotCompilationProfiler, StackProfiler}
 import org.openjdk.jmh.results.format.ResultFormatType
@@ -10,11 +11,12 @@ import org.openjdk.jmh.runner.options.OptionsBuilder
 object BenchmarkAll {
 
 	final val Iterations = 15
-	final val Forks      = 2
+	final val Forks      = 1
 
 	final val Benchmarks = Seq[Class[_]](
 		classOf[Simple],
 		classOf[BrainFuck],
+		classOf[Json],
 	)
 
 	@throws[RunnerException]
@@ -28,7 +30,7 @@ object BenchmarkAll {
 			.measurementIterations(Iterations)
 			.forks(Forks)
 //    		.addProfiler(classOf[StackProfiler])
-//    		.addProfiler(classOf[GCProfiler])
+    		.addProfiler(classOf[GCProfiler])
 //    		.addProfiler(classOf[HotspotCompilationProfiler])
 			.shouldFailOnError(true)
 			.resultFormat(ResultFormatType.JSON)

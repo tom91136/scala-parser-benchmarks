@@ -34,20 +34,16 @@ object Collectors {
 		_parser.parseOnly(input).either
 	}
 
-
 	// SPC uses type members so we have this odd type signature
 	@inline final def collectSPC[
-	P <: scala.util.parsing.combinator.Parsers {type Elem = Char},
-	A](parser_ : P#Parser[A], input: String): Result[A] = {
-		import scala.util.parsing.input.CharSequenceReader
-		val x: P#ParseResult[A] = parser_.apply(new CharSequenceReader(input))
-		x match {
-			case _: P#Success[_] => Right(x.get)
+	P <: scala.util.parsing.combinator.Parsers  ,
+	A](parser_ : String => P#ParseResult[A], input: String): Result[A] = {
+		parser_(input) match {
+			case _: P#Success[_] => Right(parser_(input).get)
 			case f: P#NoSuccess  => Left(f.msg)
 			case e               => Left(s"Unexpected parse error $e")
 		}
 	}
-
 
 	@inline final def collectParsec[A](parser: parsec.Parser[A],
 									   input: String): Result[A] = {
@@ -62,7 +58,7 @@ object Collectors {
 		import fastparse.core.Parsed.{Failure, Success}
 		parser.parse(input) match {
 			case Success(value, _)        => Right(value)
-			case f: Failure[Char, String] => Left(f.msg)
+			case f: Failure[Char, String] => Left(s"${f.msg} -> \n\t${f.extra.traced.fullStack.mkString("\n\t")}")
 		}
 	}
 

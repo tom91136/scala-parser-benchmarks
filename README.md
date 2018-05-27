@@ -63,6 +63,10 @@ Currently implemented benchmark fixtures are:
  	<one>  ::= "1"
  	<rule> ::= <one> "+" <one> | <one>
  	```
+ * [BrainFuck](https://github.com/brain-lang/brainfuck) syntax
+ * [JSON](https://www.json.org/) syntax
+ 
+	
 More meaningful fixtures will be added in the future; pull requests welcome.
 Fixtures can be found in [this](src/main/scala/net/kurobako/spb) package.
 

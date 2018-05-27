@@ -2,6 +2,7 @@ package net.kurobako.spb.simple
 
 import scala.annotation.tailrec
 import scala.util.Try
+import scala.util.parsing.input.CharSequenceReader
 
 
 // fixtures cannot be nested, see https://github.com/ktoso/sbt-jmh/issues/69
@@ -75,9 +76,10 @@ object ScalaParserCombinatorFixtures {
 	}
 
 	final val _chainL = chainL()
-	@inline final def chainL(): SPCParser#Parser[Int] = {
+	@inline final def chainL(): String => SPCParser#ParseResult[Int] = {
 		val p = new SPCParser
-		p.chainl(p.x, p.y)
+		val x = { s: String => p.chainl(p.x, p.y)(new CharSequenceReader(s)) }
+		x
 	}
 
 }

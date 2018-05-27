@@ -224,12 +224,13 @@ object Parboiled2Fixtures {
 
 		def tok(c: Char): Rule0 = rule {c ~ WhiteSpace}
 
-		private final val _EOI = EOI // stable identifier
 		def WhiteSpace: Rule0 = rule {
 			CharPredicate.from { c =>
 				(c: @switch) match {
-					case '>' | '<' | '+' | '-' | '.' | ',' | '[' | ']' | `_EOI` => false
-					case _                                                      => true
+					case '>' | '<' | '+' | '-' | '.' | ',' | '[' | ']' => false
+					// XXX implementation detail, using value instead of EOI because of identifier issues
+					case '\uFFFF' => false
+					case _        => true
 				}
 			} *
 		}
@@ -252,17 +253,18 @@ object Parboiled2Fixtures {
 object ScalaParserCombinatorFixtures {
 
 	import scala.util.parsing.combinator._
+	import scala.util.parsing.input.{CharSequenceReader, Reader}
 
 	final class SPCParser extends RegexParsers {
 
 		override def skipWhitespace: Boolean = false
 
-		val ws: Parser[List[Char]] = rep(acceptIf(c => (c: @switch) match {
+		private val ws: Parser[List[Char]] = rep(acceptIf(c => (c: @switch) match {
 			case '>' | '<' | '+' | '-' | '.' | ',' | '[' | ']' => false
 			case _                                             => true
 		})(_ => ""))
 
-		val bf: Parser[List[BrainFuckOp]] = rep((accept("operator", {
+		private val bf: Parser[List[BrainFuckOp]] = rep((accept("operator", {
 			case '>' => RightPointer
 			case '<' => LeftPointer
 			case '+' => Increment
@@ -271,12 +273,15 @@ object ScalaParserCombinatorFixtures {
 			case ',' => Input
 		}) | (accept('[') ~> ws ~> (bf ^^ Loop) <~ accept(']'))) <~ ws)
 
+		val root: Parser[List[BrainFuckOp]] = ws ~> bf
+
 	}
 
-	final val _parser: SPCParser#Parser[List[BrainFuckOp]] = parser()
-	final def parser(): SPCParser#Parser[List[BrainFuckOp]] = {
-		val p = new SPCParser
-		p.ws ~> p.bf
+	final val _parser: String => SPCParser#ParseResult[List[BrainFuckOp]] = parser()
+	final def parser(): String => SPCParser#ParseResult[List[BrainFuckOp]] = {
+		val p = new SPCParser()
+		val x = { s: String => p.phrase(p.root)(new CharSequenceReader(s)) }
+		x
 	}
 
 }

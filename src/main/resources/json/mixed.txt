@@ -1,0 +1,1 @@
+Arr(List(Obj(List((Str(a),Num(1.0)), (Str(b),Bool(false)), (Str(c),Arr(List(Bool(false), Bool(true), Null, Str(a), Obj(List())))))), Obj(List((Str(a),Str(b)), (Str(x),Str(1.20)), (Str(f),Str(n)))), Num(1.0), Str(), Bool(false), Null, Obj(List()), Arr(List()), Arr(List(Str())), Arr(List(Str(), Str())), Obj(List((Str(),Str())))))
