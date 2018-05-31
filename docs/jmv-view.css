@@ -1,0 +1,120 @@
+.jmh-view {
+    display: flex;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.73);
+}
+
+.jmh-view aside {
+    order: -1;
+    min-width: 180px;
+    max-width: 250px;
+    background-color: #294066;
+    padding: 12px 0 12px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.jmh-view .class-nav > ol {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.jmh-view .class-nav li {
+    color: rgba(255, 255, 255, 0.61);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.jmh-view .class-nav li a {
+    color: rgba(255, 255, 255, 0.82);
+    padding: 0 10px 0 22px;
+    text-decoration: none;
+    display: block;
+    line-height: 25px;
+    margin: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.jmh-view .class-nav li > a.active {
+    background-color: #405f9b;
+    color: #fff;
+}
+
+.jmh-view .class-nav li > a:hover {
+    background: #2d5799;
+}
+
+.jmh-view article {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow-x: hidden;
+    background-color: rgba(156, 184, 221, 0.25);
+}
+
+.jmh-view .bar {
+    background-color: white;
+    padding: 11px;
+    border-bottom: 1px solid rgba(51, 51, 51, 0.65);
+}
+
+.jmh-view .bar span {
+    padding: 0 8px 0 8px;
+    display: inline-block;
+}
+
+.jmh-view article > header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.jmh-view .class-result {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-basis: 0;
+}
+
+.jmh-view table {
+    font-size: 0.86em;
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #d8d8d8;
+}
+
+.jmh-view table td, .jmh-view table th {
+    border: 1px solid #d8d8d8;
+}
+
+.jmh-view .class-result .result-block {
+    display: block;
+    background-color: white;
+    padding: 12px;
+    overflow: auto;
+}
+
+.jmh-view .class-result .result-header {
+    position: sticky;
+    z-index: 100;
+    top: 0;
+}
+
+.jmh-view .class-result .highcharts-container {
+    overflow: hidden;
+}
+
+@media only screen and (min-width: 0px) and  (max-width: 799px) {
+    .jmh-view aside {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 800px) {
+    .jmh-view .alt-class-nav {
+        display: none;
+    }
+}

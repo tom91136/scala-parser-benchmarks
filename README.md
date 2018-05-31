@@ -33,7 +33,7 @@ actively developed so changes are tracked using submodules.
 
 ## Results
 
-Latest JMH reports are [here](https://tom91136.github.io/scala-parser-benchmarks/report.html?sources=data.json)
+Latest JMH reports are [here](https://tom91136.github.io/scala-parser-benchmarks/report.html)
 
 <!---
 Latest PDF results are [here](results/data.pdf)

@@ -1,25 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>JMH Visualizer</title>
-        <meta name="description" content="JMH Visualizer helps you to visualize your JMH benchmark results. Just upload your JSON report and you will get it visualized as charts." />
-        <meta name="keywords" content="JMH, Java, benchmark, visualization, visualize, viz, visual, report, chart, plot, graph, result, online, explore">
-        <link rel="shortcut icon" href="favicons/favicon.ico" />
-        <link rel="icon" href="favicons/favicon.ico" />
-        <script src="provided.js"></script>
-        <script src="settings.js"></script>
-        <style type="text/css">
-            body {
-                color: #212121;
-                font-family: "Helvetica Neue", "Calibri Light", Roboto, sans-serif;
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
-                letter-spacing: 0.02em;
-            }
-        </style>
-    </head>
-    <body>
-        <div id="main"></div>
-    <script type="text/javascript" src="bundle.js"></script></body>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Benchmark results</title>
+</head>
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css"
+      type="text/css"/>
+
+<link rel="stylesheet"
+      href="jmv-view.css"
+      type="text/css"/>
+
+<style>
+    body {
+        font-family: "Lato", sans-serif;
+        font-size: 15px;
+        line-height: 1.7;
+        color: #7B7B7E;
+        background-color: #fff;
+    }
+
+    #container {
+        height: 100vh;
+    }
+</style>
+
+<body>
+
+<div id="container"></div>
+
+<script type="text/javascript" src="jmh-view-jsdeps.js"></script>
+<script type="text/javascript" src="jmh-view-opt.js"></script>
+<script>
+    JMHView.setup("container", "data.json")
+</script>
+
+</body>
 </html>
