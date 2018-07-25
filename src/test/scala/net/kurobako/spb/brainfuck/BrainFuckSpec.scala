@@ -26,6 +26,7 @@ class BrainFuckSpec extends FlatSpec with Matchers with EitherValues {
 			bf.warmAtto _,
 			bf.warmParsley _,
 			bf.warmFastParse _,
+			bf.warmMeerkat _,
 //			bf.warmParseback _,
 			bf.warmParboiled2 _,
 
@@ -33,14 +34,15 @@ class BrainFuckSpec extends FlatSpec with Matchers with EitherValues {
 			bf.coldAtto _,
 			bf.coldParsley _,
 			bf.coldFastParse _,
+			bf.coldMeerkat _,
 //			bf.coldParseback _,
 			bf.coldParboiled2 _,
 		)) { method =>
 
 			forAll(Table(
 				("file", "expected"),
-				("brainfuck/helloworld_comments.bf", "brainfuck/helloworld_comments.txt"),
 				("brainfuck/helloworld.bf", "brainfuck/helloworld.txt"),
+				("brainfuck/helloworld_comments.bf", "brainfuck/helloworld_comments.txt"),
 				("brainfuck/fizzbuzz.bf", "brainfuck/fizzbuzz.txt"),
 				//				("brainfuck/mandelbrot.bf", "brainfuck/mandelbrot.txt"), // too slow
 			)) { (file: String, expected: String) =>

@@ -286,6 +286,59 @@ object ScalaParserCombinatorFixtures {
 
 }
 
+object MeerkatFixtures {
+
+	import org.meerkat.Syntax._
+	import org.meerkat.parsers.Parsers._
+	import org.meerkat.parsers._
+	import org.meerkat.sppf.SPPFLookup
+	import org.meerkat.tree.TerminalSymbol
+
+	@inline private def fastMatch(c: Char): Boolean = (c: @switch) match {
+		case '>' | '<' | '+' | '-' | '.' | ',' | '[' | ']' => true
+		case _                                             => false
+	}
+
+	final val _parser = parser()
+	@inline final def parser(): Nonterminal & List[BrainFuckOp] = {
+
+		implicit val L: Layout = layout(new Terminal {
+
+			import org.meerkat.util.Input
+
+			def apply(input: Input, i: Int, sppfLookup: SPPFLookup) = {
+				val len = input.length
+				if (i >= len) CPSResult.success(sppfLookup.getTerminalNode(name, i, i))
+				else if (fastMatch(input.charAt(i))) CPSResult.success(sppfLookup.getTerminalNode(name, i, i))
+				else {
+					val end = input.s.indexWhere(c => fastMatch(c), i)
+					if (end == -1) CPSResult.success(sppfLookup.getTerminalNode(name, len, len))
+					else CPSResult.success(sppfLookup.getTerminalNode(name, i, end))
+				}
+			}
+			def name = "<CTRL chars>"
+			def symbol = TerminalSymbol(name)
+		})
+
+		/*_*/
+		lazy val P: Nonterminal & List[BrainFuckOp] = syn(
+			">" ^ { _ => RightPointer }
+			| "<" ^ { _ => LeftPointer }
+			| "+" ^ { _ => Increment }
+			| "-" ^ { _ => Decrement }
+			| "." ^ { _ => Output }
+			| "," ^ { _ => Input }
+			| ("[" ~ P ~ "]") & {Loop(_)}
+			// XXX  need this instead of just doing * at the end otherwise it stackoverflows or 
+			// throws a CCE during the application of `&`, as seen at 
+			// `org/meerkat/parsers/Parsers.scala` where asInstanceOf[T] is used
+			| ("[" ~ "]") ^ { _ => Loop(Nil) }
+		).+
+		/*_*/
+		start(P)
+	}
+
+}
 
 // TODO resync with stable to see if it works at all
 object ParsebackFixtures {

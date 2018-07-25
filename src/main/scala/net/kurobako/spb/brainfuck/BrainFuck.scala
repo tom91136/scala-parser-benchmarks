@@ -60,6 +60,10 @@ class BrainFuck {
 	@Benchmark def warmFastParse(ctx: Context): Result[BFOps] = !!(collectFastParse(FastParseFixtures._parser, ctx.input))
 	@Benchmark def coldFastParse(ctx: Context): Result[BFOps] = !!(collectFastParse(FastParseFixtures.parser(), ctx.input))
 
+	// meerkat
+	@Benchmark def warmMeerkat(ctx: Context): Result[BFOps] = !!(collectMeerkat(MeerkatFixtures._parser, ctx.input))
+	@Benchmark def coldMeerkat(ctx: Context): Result[BFOps] = !!(collectMeerkat(MeerkatFixtures.parser(), ctx.input))
+
 
 	// FIXME resync and check
 	// parseback
