@@ -4,7 +4,7 @@ enablePlugins(JmhPlugin)
 
 
 lazy val commonSettings = Seq(
-	scalaVersion := "2.12.6",
+	scalaVersion := "2.12.7",
 	javacOptions ++= Seq(
 		"-target", "1.8",
 		"-source", "1.8",
@@ -89,11 +89,15 @@ lazy val parsley = project.settings(
 		"-opt:l:inline",
 		"-opt-inline-from"
 	),
-	scalaSource in Compile := baseDirectory.value / "src"
+	scalaSource in Compile := baseDirectory.value / "src",
+	scalaSource in Test := baseDirectory.value / "test",
+	libraryDependencies ++= Seq(
+		"org.scalatest" %% "scalatest" % "3.0.1" % Test
+	),
 )
 
 
-lazy val JmhVersion = "1.20"
+lazy val JmhVersion = "1.21"
 
 lazy val `scala-parser-benchmarks` = (project in file(".")).settings(
 	organization := "net.kurobako",
@@ -106,10 +110,10 @@ lazy val `scala-parser-benchmarks` = (project in file(".")).settings(
 	libraryDependencies ++= Seq(
 
 		// parser dependencies
-		"org.tpolecat" %% "atto-core" % "0.6.2-M1",
-		"org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.0",
+		"org.tpolecat" %% "atto-core" % "0.6.4",
+		"org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.1",
 		"com.github.meerkat-parser" % "Meerkat" % "3e59173f1e",
-		"org.parboiled" %% "parboiled" % "2.1.4",
+		"org.parboiled" %% "parboiled" % "2.1.5",
 		"com.lihaoyi" %% "fastparse" % "1.0.0",
 		"com.codecommit" %% "parseback-core" % "0.4.0-f0c3683",
 		"com.codecommit" %% "parseback-cats" % "0.3",
@@ -118,10 +122,16 @@ lazy val `scala-parser-benchmarks` = (project in file(".")).settings(
 		"org.openjdk.jmh" % "jmh-core" % JmhVersion,
 		"org.openjdk.jmh" % "jmh-generator-annprocess" % JmhVersion % Compile,
 
-		"org.typelevel" %% "cats-core" % "1.0.1",
+		"org.typelevel" %% "cats-core" % "1.4.0",
 		"org.scalatest" %% "scalatest" % "3.0.1" % Test
 	),
 	mainClass in Compile := Some("net.kurobako.spb.Simple"),
+//	assemblyShadeRules in assembly := Seq(
+//		ShadeRule.rename("fastparse.**" -> "fastparse_shaded_v1")
+//			.inLibrary("com.lihaoyi" %% "fastparse" % "1.0.0")
+//			.inProject
+//	)
+
 )
 	.aggregate(`parsec-for-scala`, parsley)
 	.dependsOn(`parsec-for-scala`, parsley)

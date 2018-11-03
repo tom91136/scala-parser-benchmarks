@@ -36,7 +36,7 @@ class JsonSpec extends FlatSpec with Matchers with EitherValues {
 				("json/obj0.json", "json/obj0.txt"),
 				("json/obj1.json", "json/obj1.txt"),
 				("json/obj2.json", "json/obj2.txt"),
-				("json/medium.json", "json/medium.txt"),
+//				("json/medium.json", "json/medium.txt"),
 				//				("json/long.json", ""),
 			)) { (file: String, expected: String) =>
 				val context = new spb.json.Json.Context()
