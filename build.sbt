@@ -191,7 +191,7 @@ lazy val AllBenches = Seq(
 	`fastparse2-bench`,
 	`parsec-for-scala-bench`,
 	`parboiled2-bench`,
-	`parseback-bench`,
+//	`parseback-bench`, // XXX empty bench, disabled as it causes jmh to fail
 	`atto-bench`,
 	`scala-parser-combinators-bench`,
 	`baseline-recursive-descent-bench`,
